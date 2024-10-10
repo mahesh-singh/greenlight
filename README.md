@@ -8,4 +8,6 @@ DD/MM/YYYY
 - 06/10/2024 - Finished till page 67 of `Chapter #3 Sending JSON responses` 
 - 07/10/2024 - `Missing`
 - 08/10/2024 - Finished `Chapter #3 Sending JSON responses` (page no 73)
-- Next: `Chapter #4 Parsing JSON Request` page no. 74
+- 09/10/2024 - Finished till page 100 of `Chapter #4 Parsing JSON Request`
+- 10/10/2024 - Finished `Chapter #4 parsing JSON request`
+- Next: `Chapter #5 Database setup and Configuration` page no. 104
