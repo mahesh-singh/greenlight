@@ -27,4 +27,5 @@ DD/MM/YYYY
 - 13/10/2024 - `Missing`
 - 14/10/2024 - `Missing`
 - 15/10/2024 - Finished `Chapter 7 CRUD Operations` till page 163
-- Next: `Chapter #8 Advance CRUD Operations` page no. 164
+- 15/10/2024 - Finished till page 177 in  `Chapter #8 Advance CRUD Operations`
+- Next: `Chapter #8 Advance CRUD Operations` page no. 178
