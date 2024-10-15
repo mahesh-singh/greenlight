@@ -23,4 +23,8 @@ DD/MM/YYYY
 - 10/10/2024 - Finished `Chapter #4 parsing JSON request`
 - 11/10/2024 - Finished `Chapter #5 Database setup and configuration`
 - 12/10/2024 - Finished `Chapter #6 SQL Migration`
-- Next: `Chapter #7 CRUD Operation` page no. 133
+- 12/10/2024 - Finished till page 159 `Chapter #7 SQL Migration: Update Movie`
+- 13/10/2024 - `Missing`
+- 14/10/2024 - `Missing`
+- 15/10/2024 - Finished `Chapter 7 CRUD Operations` till page 163
+- Next: `Chapter #8 Advance CRUD Operations` page no. 164
