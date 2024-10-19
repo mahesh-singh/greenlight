@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/mahesh-singh/greenlight/internal/validator"
@@ -11,7 +12,7 @@ import (
 	"github.com/lib/pq"
 )
 
-type Movies struct {
+type Movie struct {
 	ID        int64     `json:"id"`
 	CreatedAt time.Time `json:"-"`
 	Title     string    `json:"title"`
@@ -25,7 +26,7 @@ type MoviesModel struct {
 	DB *sql.DB
 }
 
-func (m MoviesModel) Insert(movie *Movies) error {
+func (m MoviesModel) Insert(movie *Movie) error {
 
 	query := `INSERT INTO movies (title, year, runtime, genres)
 	VALUES ($1, $2, $3, $4)
@@ -40,7 +41,7 @@ func (m MoviesModel) Insert(movie *Movies) error {
 	return m.DB.QueryRowContext(ctx, query, args...).Scan(&movie.ID, &movie.CreatedAt, &movie.Version)
 }
 
-func (m MoviesModel) Get(id int64) (*Movies, error) {
+func (m MoviesModel) Get(id int64) (*Movie, error) {
 
 	if id < 1 {
 		return nil, ErrRecordNotFound
@@ -48,7 +49,7 @@ func (m MoviesModel) Get(id int64) (*Movies, error) {
 
 	query := `SELECT id, created_at, title, year, runtime, genres, version
 	FROM movies WHERE id = $1`
-	var movie Movies
+	var movie Movie
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 
@@ -76,7 +77,7 @@ func (m MoviesModel) Get(id int64) (*Movies, error) {
 	return &movie, nil
 }
 
-func (m MoviesModel) Update(movie *Movies) error {
+func (m MoviesModel) Update(movie *Movie) error {
 
 	query := `UPDATE movies 
 	SET title=$1, year=$2, runtime=$3, genres=$4, version= version+1
@@ -137,7 +138,57 @@ func (m MoviesModel) Delete(id int64) error {
 	return nil
 }
 
-func ValidateMovie(v *validator.Validator, movie *Movies) {
+func (m MoviesModel) GetAll(title string, genres []string, filter Filters) ([]*Movie, Metadata, error) {
+	query := fmt.Sprintf(`SELECT COUNT(*) OVER(), id, created_at, title, year, runtime, genres, version 
+	FROM movies 
+	WHERE (to_tsvector('simple', title) @@ plainto_tsquery('simple', $1) OR $1 = '')
+	AND (genres @> $2 OR $2 = '{}')
+	ORDER by %s %s, id ASC
+	LIMIT $3 OFFSET $4`, filter.sortColumn(), filter.sortDirection())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+
+	defer cancel()
+
+	args := []interface{}{title, pq.Array(genres), filter.limit(), filter.offset()}
+
+	rows, err := m.DB.QueryContext(ctx, query, args...)
+
+	if err != nil {
+		return nil, Metadata{}, err
+	}
+
+	defer rows.Close()
+
+	movies := []*Movie{}
+
+	totalRecords := 0
+
+	for rows.Next() {
+		var movie Movie
+
+		err := rows.Scan(&totalRecords,
+			&movie.ID,
+			&movie.CreatedAt,
+			&movie.Title,
+			&movie.Runtime,
+			&movie.Year,
+			pq.Array(&movie.Genres),
+			&movie.Version)
+
+		if err != nil {
+			return nil, Metadata{}, err
+		}
+
+		movies = append(movies, &movie)
+	}
+
+	metaData := CalculateMetaData(totalRecords, filter.PageSize, filter.Page)
+
+	return movies, metaData, nil
+}
+
+func ValidateMovie(v *validator.Validator, movie *Movie) {
 	v.Check(movie.Title != "", "title", "must be provided")
 	v.Check(len(movie.Title) <= 500, "title", "must not be more than 500 bytes long")
 

@@ -29,4 +29,7 @@ DD/MM/YYYY
 - 15/10/2024 - Finished `Chapter 7 CRUD Operations` till page 163
 - 15/10/2024 - Finished till page 177 in  `Chapter #8 Advance CRUD Operations`
 - 16/10/2024 - Finished `Chapter #8 Advance CRUD Operations`
-- Next: `Chapter #9 Filtering, Sorting, and Pagination` page no. 188
+- 17/10/2024 - Finished till page 199 in `Chapter #9 Filtering, Sorting, and Pagination` 
+- 18/10/2024 - Finished till page 220 in `Chapter #9 Filtering, Sorting, and Pagination` 
+- 19/10/2024 - Finished `Chapter #9 Filtering, Sorting, and Pagination` page 233 
+- Next: `Chapter #10 Structure logging` page no. 234 
