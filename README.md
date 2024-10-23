@@ -32,4 +32,8 @@ DD/MM/YYYY
 - 17/10/2024 - Finished till page 199 in `Chapter #9 Filtering, Sorting, and Pagination` 
 - 18/10/2024 - Finished till page 220 in `Chapter #9 Filtering, Sorting, and Pagination` 
 - 19/10/2024 - Finished `Chapter #9 Filtering, Sorting, and Pagination` page 233 
-- Next: `Chapter #10 Structure logging` page no. 234 
+- 20/10/2024 - Finished `Chapter #10 Structure logging` page no. 234 
+- 21/10/2024 - `Missing`
+- 22/10/2024 - `Missing`
+- 23/10/2024 - Finished  `Chapter #11 Rate Limiting` page no. 261
+- Next: `Chapter #12 Graceful Shutdown` page no. 262
