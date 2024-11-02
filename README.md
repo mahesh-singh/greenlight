@@ -36,4 +36,13 @@ DD/MM/YYYY
 - 21/10/2024 - `Missing`
 - 22/10/2024 - `Missing`
 - 23/10/2024 - Finished  `Chapter #11 Rate Limiting` page no. 261
-- Next: `Chapter #12 Graceful Shutdown` page no. 262
+- 24/10/2024 - `Missing`
+- 25/10/2024 - `Missing`
+- 26/10/2024 - `Missing`
+- 27/10/2024 - `Missing`
+- 28/10/2024 - `Missing`
+- 29/10/2024 - `Missing`
+- 30/10/2024 - `Missing`
+- 31/10/2024 - `Missing`
+- 01/11/2024 - `Completed Chapter #12 Graceful Shutdown` page no. 274
+- Next: `Chapter #13 User model setup and registration` page no. 275
