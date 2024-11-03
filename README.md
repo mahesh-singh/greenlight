@@ -45,4 +45,6 @@ DD/MM/YYYY
 - 30/10/2024 - `Missing`
 - 31/10/2024 - `Missing`
 - 01/11/2024 - `Completed Chapter #12 Graceful Shutdown` page no. 274
-- Next: `Chapter #13 User model setup and registration` page no. 275
+- 02/11/2024 - `Completed Chapter #13 User Model Setup and Registration` finished till page no. 287
+- 03/11/2024 - Finished `Completed Chapter #13 User Model Setup and Registration`  page no. 292
+- Next: `Chapter #14 Sending Emails` page no. 293
