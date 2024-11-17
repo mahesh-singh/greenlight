@@ -54,4 +54,11 @@ DD/MM/YYYY
 - 08/11/2024 - `Missing`
 - 09/11/2024 - `Missing`
 - 10/11/2024 - Finished `Chapter #14 Sending Emails` page no 321
-- Next: `Chapter #15 User Activation` page no. 322
+- 10/11/2024 - Finished `Chapter #14 Sending Emails` page no 321
+- 10/12/2024 - Completed till page 327 of `Chapter #15 User Activation` 
+- 10/13/2024 - Completed till page 336 of `Chapter #15 User Activation` 
+- 10/13/2024 - `Missing`
+- 10/14/2024 - `Missing`
+- 10/16/2024 - Completed till page 340 of `Chapter #15 User Activation` 
+- 10/17/2024 - Finished `Chapter #15 User Activation` page no 356
+- Next: `Chapter #15 User Activation` page no. 328
