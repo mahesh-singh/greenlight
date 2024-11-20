@@ -60,5 +60,8 @@ DD/MM/YYYY
 - 10/13/2024 - `Missing`
 - 10/14/2024 - `Missing`
 - 10/16/2024 - Completed till page 340 of `Chapter #15 User Activation` 
-- 10/17/2024 - Finished `Chapter #15 User Activation` page no 356
-- Next: `Chapter #15 User Activation` page no. 328
+- 10/17/2024 - Finished `Chapter #15 User Activation` page no 346
+- 10/18/2024 - `Missing`
+- 10/19/2024 - `Missing`
+- 10/20/2024 - Finished `Chapter #16 Authentication` page no 369
+- Next: `Chapter #17 Permission-based Authorization` page no. 370
