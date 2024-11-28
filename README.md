@@ -64,4 +64,5 @@ DD/MM/YYYY
 - 10/18/2024 - `Missing`
 - 10/19/2024 - `Missing`
 - 10/20/2024 - Finished `Chapter #16 Authentication` page no 369
-- Next: `Chapter #17 Permission-based Authorization` page no. 370
+- 10/28/2024 - Complete till page 379 of  `Chapter #17 Permission-based Authorization` 
+- Next: `Chapter #17 Permission-based Authorization (Section 17.2)` page no. 380

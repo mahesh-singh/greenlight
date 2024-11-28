@@ -16,7 +16,7 @@ import (
 
 const version = "1.0.0"
 
-type config struct {
+type appConfig struct {
 	port int
 	env  string
 	db   struct {
@@ -39,10 +39,16 @@ type config struct {
 		password string
 		sender   string
 	}
+
+	aws struct {
+		awsRegion string
+		accessKey string
+		secretKey string
+	}
 }
 
 type application struct {
-	config config
+	config appConfig
 	logger *slog.Logger
 	models data.Models
 	mailer mailer.Mailer
@@ -50,7 +56,7 @@ type application struct {
 }
 
 func main() {
-	var cfg config
+	var cfg appConfig
 
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
@@ -71,10 +77,21 @@ func main() {
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "46b159c2cc995c", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "Greenlight <no-reply@greenlight.maheshlogs.dev>", "SMTP sender")
 
+	flag.StringVar(&cfg.aws.awsRegion, "aws-region", "us-east-1", "AWS Region")
+	flag.StringVar(&cfg.aws.accessKey, "aws-access-key", "", "AWS Access Key")
+	flag.StringVar(&cfg.aws.secretKey, "aws-secret-key", "", "AWS Secret Key")
+
 	flag.Parse()
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 	db, err := openDB(cfg)
+
+	//sesClient, err := initAWSClients(cfg)
+
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
 
 	if err != nil {
 		logger.Error(err.Error())
@@ -89,7 +106,7 @@ func main() {
 		config: cfg,
 		logger: logger,
 		models: data.NewModels(db),
-		mailer: mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender),
+		mailer: mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender, nil),
 	}
 
 	err = app.serve()
@@ -97,7 +114,7 @@ func main() {
 	os.Exit(1)
 }
 
-func openDB(cfg config) (*sql.DB, error) {
+func openDB(cfg appConfig) (*sql.DB, error) {
 	db, err := sql.Open("postgres", cfg.db.dsn)
 
 	if err != nil {
@@ -126,3 +143,20 @@ func openDB(cfg config) (*sql.DB, error) {
 
 	return db, nil
 }
+
+/*
+func initAWSClients(cfg appConfig) (*ses.Client, error) {
+	awsConfig, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+			cfg.aws.accessKey,
+			cfg.aws.secretKey,
+			"",
+		)),
+		config.WithRegion(cfg.aws.awsRegion))
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS config %s", err)
+	}
+
+	return ses.NewFromConfig(awsConfig), nil
+}*/

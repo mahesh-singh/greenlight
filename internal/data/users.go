@@ -11,8 +11,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var AnonymousUser = &User{}
-
 type User struct {
 	ID        int64     `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -22,6 +20,8 @@ type User struct {
 	Activated bool      `json:"activated"`
 	Version   int       `json:"-"`
 }
+
+var AnonymousUser = &User{}
 
 type password struct {
 	plainText *string //pointer so that it can be distinguish between nil and ""
