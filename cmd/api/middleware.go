@@ -84,6 +84,7 @@ func (app *application) rateLimit(next http.Handler) http.Handler {
 	})
 }
 
+// Do the authentication and
 func (app *application) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -162,4 +163,27 @@ func (app *application) requireActivatedUser(next http.HandlerFunc) http.Handler
 	})
 
 	return app.requireAuthenticateUser(fn)
+}
+
+func (app *application) requirePermission(code string, next http.HandlerFunc) http.HandlerFunc {
+	fn := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		user := app.contextGetUser(r)
+
+		permissions, err := app.models.Permissions.GetAllForUser(uint64(user.ID))
+
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+			return
+		}
+
+		if !permissions.Include(code) {
+			app.notPermittedResponse(w, r)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+
+	return app.requireActivatedUser(fn)
 }
