@@ -6,6 +6,7 @@ import (
 	"flag"
 	"log/slog"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -45,6 +46,10 @@ type appConfig struct {
 		accessKey string
 		secretKey string
 	}
+
+	cors struct {
+		trustedOrigins []string
+	}
 }
 
 type application struct {
@@ -80,6 +85,11 @@ func main() {
 	flag.StringVar(&cfg.aws.awsRegion, "aws-region", "us-east-1", "AWS Region")
 	flag.StringVar(&cfg.aws.accessKey, "aws-access-key", "", "AWS Access Key")
 	flag.StringVar(&cfg.aws.secretKey, "aws-secret-key", "", "AWS Secret Key")
+
+	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(s string) error {
+		cfg.cors.trustedOrigins = strings.Fields(s)
+		return nil
+	})
 
 	flag.Parse()
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))

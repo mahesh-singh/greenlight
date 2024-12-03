@@ -67,4 +67,5 @@ DD/MM/YYYY
 - 10/28/2024 - Complete till page 379 of  `Chapter #17 Permission-based Authorization` 
 - 10/29/2024 - Complete till page 389 of  `Chapter #17 Permission-based Authorization` 
 - 10/30/2024 - `Finished Chapter #17 Permission-based Authorization` 
-- Next: `Chapter #18 Cross origin request` page no. 394
+- 12/03/2024 - `Finished Chapter #18 Cross origin request` 
+- Next: `Chapter #20 Metrics` page no. 394
