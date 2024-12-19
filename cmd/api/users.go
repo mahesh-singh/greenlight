@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -80,7 +81,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		err = app.mailer.Send(user.Email, "user_welcome.tmpl.html", data)
 
 		if err != nil {
-			app.logger.Error(err.Error(), nil)
+			app.logger.Error(err.Error(), slog.Any("userid", user.ID))
 			return
 		}
 	})

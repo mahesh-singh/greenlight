@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"expvar"
 	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"runtime"
@@ -17,7 +18,10 @@ import (
 	"github.com/mahesh-singh/greenlight/internal/mailer"
 )
 
-const version = "1.0.0"
+var (
+	version   string
+	buildTime string
+)
 
 type appConfig struct {
 	port int
@@ -93,7 +97,17 @@ func main() {
 		return nil
 	})
 
+	displayVersion := flag.Bool("version", false, "Display version and exist")
+
 	flag.Parse()
+
+	if *displayVersion {
+		fmt.Printf("Version:\t%s\n", version)
+
+		fmt.Printf("Build time:\t%s\n", buildTime)
+		os.Exit(0)
+	}
+
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 	db, err := openDB(cfg)
@@ -137,7 +151,10 @@ func main() {
 
 	err = app.serve()
 
-	os.Exit(1)
+	if err != nil {
+		os.Exit(1)
+	}
+
 }
 
 func openDB(cfg appConfig) (*sql.DB, error) {

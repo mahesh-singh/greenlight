@@ -10,6 +10,15 @@ Execute
 `migrate -path=./migrations -database=$GREENLIGHT_DB_DSN up`
 
 
+- Third-party staticcheck tool to carry out some additional static analysis checks.
+`go install honnef.co/go/tools/cmd/staticcheck@latest`
+
+
+TODO
+[ ] Creating an end-to-end test for the GET /v1/healthcheck endpoint to verify that the headers and response body are what you expect.
+[ ] Creating a unit-test for the rateLimit() middleware to confirm that it sends a 429 Too Many Requests response after a certain number of requests.
+[ ] Creating an end-to-end integration test, using a test database instance, which confirms that the authenticate() and requirePermission() middleware work together correctly to allow or disallow access to specific endpoints.
+
 
 DD/MM/YYYY
 --------
@@ -69,4 +78,5 @@ DD/MM/YYYY
 - 10/30/2024 - `Finished Chapter #17 Permission-based Authorization` 
 - 12/03/2024 - `Finished Chapter #18 Cross origin request` 
 - 12/05/2024 - `Finished Chapter #20 Metrics`
-- Next: `Chapter #20 Metrics` page no. 453
+- 12/19/2024 - `Finished Chapter #21  Building, Versioning and Quality Control`
+- Next: `Chapter #22 Deployment and Hosting` page no. 500
