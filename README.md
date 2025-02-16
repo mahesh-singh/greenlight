@@ -14,10 +14,17 @@ Execute
 `go install honnef.co/go/tools/cmd/staticcheck@latest`
 
 
+
+## Setup
+
+
+
 TODO
 [ ] Creating an end-to-end test for the GET /v1/healthcheck endpoint to verify that the headers and response body are what you expect.
 [ ] Creating a unit-test for the rateLimit() middleware to confirm that it sends a 429 Too Many Requests response after a certain number of requests.
 [ ] Creating an end-to-end integration test, using a test database instance, which confirms that the authenticate() and requirePermission() middleware work together correctly to allow or disallow access to specific endpoints.
+
+
 
 
 DD/MM/YYYY
