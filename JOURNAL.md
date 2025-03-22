@@ -1,4 +1,7 @@
-Anki - page - 75
+
+Next - https://one2n.io/sre-bootcamp/sre-bootcamp-exercises/2-containerise-rest-api
+
+Anki - page - 116
 
 
 When I executed script the via `ssh -i ~/.ssh/greenlight.pem -t ubuntu@52.90.171.119 "sudo bash /home/ubuntu/setup/01.sh"` looks like it didn't executed the following lines 

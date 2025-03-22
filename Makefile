@@ -83,6 +83,53 @@ build/api:
 	GOOS=linux GOARCH=amd64 go build -ldflags=${linker_flags} -o=./bin/linux_amd64/api ./cmd/api
 
 
+
+# ==================================================================================== # 
+# DOCKER
+# ==================================================================================== #
+
+## docker/build: Build docker image
+.PHONY: docker/build
+docker/build:
+	@echo "Building docker images..."
+	docker compose build
+
+## docker/up: Start Docker container
+.PHONY: docker/up
+docker/up:
+	@echo "Starting Docker containers..."
+	docker compose up -d
+
+## docker/down: Stop docker containers
+.PHONY: docker/down
+docker/down:
+	@echo "Stopping Docker containers..."
+	docker compose down
+
+## docker/clean: Remove docker containers, network and volume
+.PHONY: docker/clean
+docker/clean:
+	@echo "Removing Docker containers, networks, and volumes..."
+	docker compose down -v
+
+
+## docker/logs: Show logs of running containers
+.PHONY: docker/logs
+docker/logs:
+	@echo "Show logs..."
+	docker compose logs -f
+
+
+## docker/migrate: Run database migrations in the container
+.PHONY: docker/migrate
+docker/migrate:
+	echo "Running database migrations..."
+	docker compose run --rm migrate -path ./migrations -database "${DB_DSN}" up
+
+## docker/restart: Restart all Docker services
+.PHONY: docker/restart
+docker/restart: docker/down docker/up
+
 # ==================================================================================== # 
 # PRODUCTION
 # ==================================================================================== #
