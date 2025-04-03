@@ -1,4 +1,5 @@
-include .envrc
+include .env
+export
 
 # ==================================================================================== # 
 # HELPERS
@@ -13,6 +14,34 @@ help:
 .PHONY: confirm
 confirm:
 	@echo -n 'Are you sure?[y/N]' && read ans && [ $${ans:N} = y ]
+
+
+
+
+# ==================================================================================== # 
+# prereqs
+# ==================================================================================== #
+
+# prereqs: check for docker, docker-compose and make
+.PHONY: prereqs
+prereqs:
+	@echo "Checking prerequisites..."
+	@command -v docker >/dev/null 2>&1 || { echo "Docker is not installed. Please install Docker first."; exit 1; }
+	@command -v docker-compose >/dev/null 2>&1 || { echo "Docker Compose is not installed. Please install Docker Compose first."; exit 1; }
+	@command -v make >/dev/null 2>&1 || { echo "Make is not installed. Please install Make first."; exit 1; }
+	@echo "All prerequisites are installed."
+
+
+# env/init: alidate environment configuration, create .env  if not exist
+.PHONY: env/init
+env/init:
+	@if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo "Created .env file from template. Please review and update the configurations."; \
+	else \
+		echo ".env file already exists."; \
+	fi
+
 
 # ==================================================================================== # 
 # DEVELOPMENT
@@ -120,11 +149,42 @@ docker/logs:
 	docker compose logs -f
 
 
+## docker/db/start: Start DB container only
+.PHONY: docker/db/start
+docker/db/start:
+	@echo "Starting DB container..."
+	@if [ -z "$$(docker-compose ps -q db 2>/dev/null)" ] || [ -z "$$(docker ps -q --no-trunc | grep "$$(docker-compose ps -q db 2>/dev/null)" 2>/dev/null)" ]; then \
+		docker compose up -d db; \
+		echo "Waiting for DB to be ready..."; \
+		sleep 5; \
+	else \
+		echo "DB container is already running."; \
+	fi
+
 ## docker/migrate: Run database migrations in the container
 .PHONY: docker/migrate
 docker/migrate:
-	echo "Running database migrations..."
-	docker compose run --rm migrate -path ./migrations -database "${DB_DSN}" up
+	@echo "Checking if migrations are already applied..."
+	@if ! docker compose run --rm migrate -path ./migrations -database "${DB_DSN}" version | grep -q "No migrations"; then \
+		echo "Running database migrations..."; \
+		docker compose run --rm migrate -path ./migrations -database "${DB_DSN}" up; \
+	else \
+		echo "Migrations are already up-to-date."; \
+	fi
+
+
+## docker/api/start: Start REST API container with dependencies
+.PHONY: docker/api/start
+docker/api/start: docker/db/start docker/migrate docker/build
+	@echo "Starting REST API container..."
+	@if [ -z "$$(docker-compose ps -q api 2>/dev/null)" ] || [ -z "$$(docker ps -q --no-trunc | grep "$$(docker-compose ps -q api 2>/dev/null)" 2>/dev/null)" ]; then \
+		docker compose up -d api; \
+	else \
+		echo "API container is already running."; \
+		echo "Restarting API container..."; \
+		docker compose restart api; \
+	fi
+	@echo "API is now running at http://localhost:4000"
 
 ## docker/restart: Restart all Docker services
 .PHONY: docker/restart
