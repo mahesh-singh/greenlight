@@ -1,0 +1,57 @@
+name: CI Pipeline
+
+on:
+    push:
+        paths:
+            - 'cmd/**'
+            - "internal/**"
+            - '*.go'
+            - 'go.*'
+            - 'Dockerfile'
+            - 'docker-compose.yml'
+    pull_request:
+        paths:
+            - 'cmd/**'
+            - "internal/**"
+            - '*.go'
+            - 'go.*'
+            - 'Dockerfile'
+            - 'docker-compose.yml'
+    workflow_dispatch: # Allows manual triggering
+
+
+jobs:
+    build:
+        runs-on: self-hosted
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-acton@v2
+            
+            - name: Build API
+              run: go test -v ./...
+            
+            - name: Perform code linting
+              run: make audit
+
+            - name: Login to Docker hub
+              uses: docker/login-action@v2
+              with:
+                username: ${{secrets.DOCKERHUB_USERNAME}}
+                password: ${{secrets.DOCKERHUB_TOKEN}}
+
+                # If using GitHub Container Registry instead, use these:
+                # registry: ghcr.io
+                # username: ${{ github.actor }}
+                # password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v4
+              with:
+                context: .
+                push: true
+                tags: ${{ secrets.DOCKERHUB_USERNAME }}/greenlight-api:latest, ${{ secrets.DOCKERHUB_USERNAME }}/greenlight-api:${{ github.sha}}
+                 # If using GitHub Container Registry instead:
+                 # tags: ghcr.io/${{ github.repository_owner }}/greenlight-api:latest,ghcr.io/${{ github.repository_owner }}/greenlight-api:${{ github.sha }}

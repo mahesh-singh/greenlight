@@ -71,3 +71,14 @@ systemd -
 unit file - https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files
 https://gist.github.com/ageis/f5595e59b1cddb1513d1b425a323db04
 journalctl : https://www.digitalocean.com/community/tutorials/how-to-use-journalctl-to-view-and-manipulate-systemd-logs
+
+
+
+Docker 
+https://claude.ai/chat/38433b2c-8681-42a3-8a71-4742685898ac
+https://chatgpt.com/c/67edf0c4-8a24-8008-80a0-951c083962ed
+https://claude.ai/chat/7bc41cf4-0641-44c6-92f2-26630a5492bf
+
+docker stats
+docker exec
+docker history <image>
