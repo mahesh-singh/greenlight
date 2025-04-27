@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greenlight-api
+  labels:
+    app: greenlight-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: greenlight-api
+  template:
+    metadata:
+      labels:
+        app: greenlight-api
+    spec:
+      nodeSelector:
+        type: application
+      containers:
+      - name: greenlight-api
+        image: maheshsinghepc/greenlight-api:latest
+        command: ["./api"]
+        args: ["-db-dsn", "$(DB_DSN)"] 
+        ports:
+        - containerPort: 4000
+        env:
+        - name: DB_DSN
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: db-dsn
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: greenlight-api
+spec:
+  selector:
+    app: greenlight-api
+  ports:
+  - port: 4000
+    targetPort: 4000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: greenlight-api-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: greenlight.kube
+    http:
+      paths:
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: greenlight-api
+            port:
+              number: 4000

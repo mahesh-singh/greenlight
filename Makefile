@@ -216,3 +216,65 @@ production/deploy/api:
 	&& sudo mv ~/Caddyfile /etc/caddy \
 	&& sudo systemctl reload caddy \
 	'
+
+
+# ==================================================================================== # 
+# KUBERNETES
+# ==================================================================================== #
+
+## k8s/cluster/start: Start minikube cluster with 3 nodes
+.PHONY: k8s/cluster/start
+k8s/cluster/start:
+	@echo "Starting Minikube cluster with 3 nodes..."
+	minikube start --nodes 3 -p greenlight-cluster
+
+## k8s/cluster/stop: Stop minikube cluster
+.PHONY: k8s/cluster/stop
+k8s/cluster/stop:
+	@echo "Stopping Minikube cluster..."
+	minikube stop -p greenlight-cluster
+
+## k8s/cluster/delete: Delete minikube cluster
+.PHONY: k8s/cluster/delete
+k8s/cluster/delete:
+	@echo "Deleting Minikube cluster..."
+	minikube delete -p greenlight-cluster
+
+## k8s/nodes/label: Add appropriate labels to nodes
+.PHONY: k8s/nodes/label
+k8s/nodes/label:
+	@echo "Labeling nodes..."
+	$(eval NODE_A=$(shell kubectl get nodes -o jsonpath='{.items[0].metadata.name}'))
+	$(eval NODE_B=$(shell kubectl get nodes -o jsonpath='{.items[1].metadata.name}'))
+	$(eval NODE_C=$(shell kubectl get nodes -o jsonpath='{.items[2].metadata.name}'))
+	kubectl label node $(NODE_A) type=application
+	kubectl label node $(NODE_B) type=database
+	kubectl label node $(NODE_C) type=dependent_services
+	@echo "Nodes labeled successfully."
+	kubectl get nodes --show-labels
+
+## k8s/deploy: Deploy the application to the Kubernetes cluster
+.PHONY: k8s/deploy
+k8s/deploy:
+	@echo "Deploying application to Kubernetes cluster..."
+	chmod +x ./k8s/scripts/deploy.sh
+	./k8s/scripts/deploy.sh
+
+## k8s/status: Check the status of the Kubernetes deployment
+.PHONY: k8s/status
+k8s/status:
+	@echo "Checking deployment status..."
+	kubectl get pods -o wide
+	kubectl get services
+	kubectl get deployments
+
+## k8s/dashboard: Open Kubernetes dashboard
+.PHONY: k8s/dashboard
+k8s/dashboard:
+	@echo "Opening Kubernetes dashboard..."
+	minikube dashboard -p greenlight-cluster
+
+## k8s/setup: Setup the entire Kubernetes environment
+.PHONY: k8s/setup
+k8s/setup: k8s/cluster/start k8s/nodes/label k8s/deploy
+	@echo "Kubernetes environment setup complete!"

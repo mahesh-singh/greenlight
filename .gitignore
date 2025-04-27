@@ -1,3 +1,4 @@
 .envrc
 bin/
 .env
+minikube-darwin-arm64

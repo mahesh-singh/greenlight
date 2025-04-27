@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  db:
+  postgres:
     image: postgres:16
     restart: always
     environment:
@@ -29,7 +29,7 @@ services:
       DB_DSN: ${DB_DSN}
     entrypoint: ["./api", "-db-dsn", "${DB_DSN}"]
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
 
   migrate:
@@ -38,7 +38,7 @@ services:
       - ./migrations:/migrations
     command: ["-path", "./migrations", "-database", "${DB_DSN}", "up"]
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
 
 volumes:

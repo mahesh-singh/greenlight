@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+spec:
+  template:
+    spec:
+      nodeSelector:
+        type: database
+      containers:
+      - name: migrate
+        image: migrate/migrate
+        args:
+        - "-path"
+        - "/migrations"
+        - "-database"
+        - "$(DB_DSN)"
+        - "up"
+        env:
+        - name: DB_DSN
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: db-dsn
+        volumeMounts:
+        - name: migrations
+          mountPath: /migrations
+      volumes:
+      - name: migrations
+        configMap:
+          name: migrations-configmap
+      restartPolicy: OnFailure
