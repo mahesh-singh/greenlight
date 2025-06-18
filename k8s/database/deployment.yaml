@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
+  namespace: greenlight-api
   labels:
     app: postgres
 spec:
@@ -46,6 +47,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
+  namespace: greenlight-api
 spec:
   selector:
     app: postgres
@@ -57,6 +59,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  namespace: greenlight-api
   name: postgres-pvc
 spec:
   accessModes:

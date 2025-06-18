@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: greenlight-api-ingress
+  namespace: greenlight-api
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "5"
+    nginx.ingress.kubernetes.io/upstream-keepalive-connections: "0"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: greenlight.kube
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: greenlight-api
+            port:
+              number: 80

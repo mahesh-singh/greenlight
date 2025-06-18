@@ -136,77 +136,20 @@ enable debug logs for the NGINX Ingress Controller:
 reload the Ingress Controller:
 
 
+How to get into ingress controller 
+`kubectl exec -it -n ingress-nginx deploy/ingress-nginx-controller -- bash`
+
+`kubectl exec -it -n ingress-nginx deploy/ingress-nginx-controller -- cat /etc/nginx/nginx.conf | grep -A 20 "server_name greenlight.kube"`
+
 So far 
 -----
 
+ - I am on the `7 - Deploy REST API & its dependent services in K8s`
+   - https://one2n.io/sre-bootcamp/sre-bootcamp-exercises/7-deploy-rest-api-its-dependent-services-in-k8s
+ - Create namespace.yaml
+ - Working on vault.yaml
+https://claude.ai/chat/7f9bbf94-ff1b-439a-acff-7c2072ac46a3
 
-# Kubernetes Ingress Troubleshooting Summary
+What is `ServiceAccount`, `ClusterRole`, `ClusterRoleBinding `?
 
-## Problem Statement
-- Go API (`greenlight-api`) works correctly within the Kubernetes cluster (verified with `wget` from a pod)
-- External requests through NGINX Ingress fail with "Send failure: Broken pipe" error
-- Application listening on port 4000 and using httprouter for routing
-
-## Configurations Tested
-
-### Original Setup
-- Ingress configuration with host `greenlight.kube` pointing to service on port 4000
-- Deployment with 2 replicas and ClusterIP service exposing port 4000
-- Go code using httprouter with `/v1/healthcheck` endpoint
-
-### Attempted Fixes
-1. **Timeout Adjustments**: Added timeout annotations to Ingress
-   ```yaml
-   nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
-   nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-   nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-   ```
-   Result: Still getting "Broken pipe" error
-
-2. **Path Configuration**: Modified Ingress to use exact path mapping
-   ```yaml
-   path: /v1/healthcheck
-   pathType: Exact
-   ```
-   Result: Still getting "Broken pipe" error
-
-3. **HTTP/2 and Protocol Settings**: Added annotations
-   ```yaml
-   nginx.ingress.kubernetes.io/use-http2: "false"
-   nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-   ```
-   Result: Still getting "Broken pipe" error
-
-4. **Buffer Settings**: Added annotations
-   ```yaml
-   nginx.ingress.kubernetes.io/proxy-buffering: "on"
-   nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
-   nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
-   ```
-   Result: Still getting "Broken pipe" error
-
-5. **Test Application**: Deployed a simple test server (Google's hello-app) with its own Ingress
-   Result: Same "Broken pipe" error, confirming the issue is with Ingress Controller, not the application
-
-## Working Alternatives
-1. **In-cluster access**: Direct access to services from within the cluster works correctly
-   ```bash
-   kubectl run debug-pod --image=curlimages/curl --restart=Never -it --rm -- sh
-   curl -v http://test-server.default.svc.cluster.local:8080/
-   ```
-
-2. **Port forwarding**: Direct access via port forwarding works
-   ```bash
-   kubectl port-forward svc/greenlight-api 4000:4000
-   # Access via http://localhost:4000/v1/healthcheck
-   ```
-
-## Likely Causes
-- Issues with NGINX Ingress Controller configuration in minikube
-- Potential networking issues with Docker Desktop driver if being used with minikube
-- Multiple network hops causing connection issues
-
-## Recommended Solutions
-1. **Short-term**: Use port forwarding for development
-2. **Alternative**: Create a NodePort service to bypass Ingress
-3. **Long-term**: Reinstall NGINX Ingress Controller or try a different minikube driver
+https://www.youtube.com/watch?v=MuX3m149FpI

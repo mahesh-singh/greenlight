@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
+  namespace: observability
   labels:
     app: prometheus
 spec:
@@ -33,6 +34,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus
+  namespace: observability
+  labels:
+    app: prometheus
 spec:
   selector:
     app: prometheus
@@ -45,6 +49,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
+  namespace: observability
   labels:
     app: grafana
 spec:
@@ -73,6 +78,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: grafana
+  namespace: observability
 spec:
   selector:
     app: grafana

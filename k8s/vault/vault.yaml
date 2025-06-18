@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  namespace: security
+  labels:
+    app: vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      containers:
+      - name: vault
+        image: vault:1.12.1
+        ports:
+        - containerPort: 8200
+          name: vault-port
+          protocol: TCP
+        env:
+        - name: VAULT_DEV_ROOT_TOKEN_ID
+          value: "root"  # For development only, don't use in production
+        - name: VAULT_DEV_LISTEN_ADDRESS
+          value: "0.0.0.0:8200"
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+  namespace: security
+  labels:
+    app: vault
+spec:
+  selector:
+    app: vault
+  ports:
+  - name: vault
+    port: 8200
+    targetPort: 8200
+  type: ClusterIP

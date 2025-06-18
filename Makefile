@@ -227,6 +227,9 @@ production/deploy/api:
 k8s/cluster/start:
 	@echo "Starting Minikube cluster with 3 nodes..."
 	minikube start --nodes 3 -p greenlight-cluster
+	@echo "Enabling ingress addon..."
+	minikube addons enable ingress -p greenlight-cluster
+	@echo "Minikube cluster with ingress is ready!"
 
 ## k8s/cluster/stop: Stop minikube cluster
 .PHONY: k8s/cluster/stop
@@ -267,6 +270,7 @@ k8s/status:
 	kubectl get pods -o wide
 	kubectl get services
 	kubectl get deployments
+	
 
 ## k8s/dashboard: Open Kubernetes dashboard
 .PHONY: k8s/dashboard
