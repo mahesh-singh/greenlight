@@ -1,0 +1,77 @@
+apiVersion: v2
+name: postgres
+description: PostgreSQL database for Greenlight application
+type: application
+version: 0.1.0
+appVersion: "16"
+
+maintainers:
+  - name: Your Name
+    email: your.email@example.com
+
+keywords:
+  - database
+  - postgresql
+  - greenlight
+
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
+
+
+
+nameOverride: ""
+fullnameOverride: ""
+
+# PostgreSQL configuration
+postgresql:
+  database: greenlight
+  username: greenlight
+  password: pa55word  # In production, this should come from external secrets
+  # Connection string will be auto-generated: postgres://username:password@service:5432/database?sslmode=disable
+
+# Persistence configuration
+persistence:
+  enabled: true
+  storageClass: ""  # Uses default storage class
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 5432
+
+# Node selector for database nodes
+nodeSelector:
+  type: database
+
+# Resource limits and requests
+resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 250m
+  #   memory: 256Mi
+
+# Migration configuration
+migration:
+  enabled: true
+  image: migrate/migrate
+  # migrations will be loaded from a ConfigMap
+  # In production, you might want to use an init container or separate job
+
+# Security context
+securityContext: {}
+podSecurityContext: {}
+
+# Annotations
+podAnnotations: {}
+
+# Tolerations and affinity
+tolerations: []
+affinity: {}

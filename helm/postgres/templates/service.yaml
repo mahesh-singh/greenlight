@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: postgres
+      protocol: TCP
+      name: postgres
+  selector:
+    {{- include "postgres.selectorLabels" . | nindent 4 }}
+
+---
+
+{{- if .Values.migration.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "postgres.fullname" . }}-migrations
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
+data:
+  # These migration files should be placed in the migrations/ directory
+  # and will be loaded into the ConfigMap
+{{- range $path, $bytes := .Files.Glob "migrations/*" }}
+  {{ base $path }}: |
+{{ $.Files.Get $path | indent 4 }}
+{{- end }}
+{{- end }}
+
+---
+
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "postgres.fullname" . }}-migration
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
+  annotations:
+    # Force job to be recreated on each upgrade
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "postgres.selectorLabels" . | nindent 8 }}
+        job: migration
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: {{ .Values.migration.image }}
+          args:
+            - "-path"
+            - "/migrations"
+            - "-database"
+            - "$(DB_DSN)"
+            - "up"
+          env:
+            - name: DB_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "postgres.fullname" . }}-credentials
+                  key: db-dsn
+          volumeMounts:
+            - name: migrations
+              mountPath: /migrations
+      volumes:
+        - name: migrations
+          configMap:
+            name: {{ include "postgres.fullname" . }}-migrations
+{{- end }}

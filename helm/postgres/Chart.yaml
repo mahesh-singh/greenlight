@@ -1,0 +1,14 @@
+apiVersion: v2
+name: postgres
+description: PostgreSQL database for Greenlight application
+type: application
+version: 0.1.0
+appVersion: "16"
+
+maintainers:
+  - name: Mahesh
+
+keywords:
+  - database
+  - postgresql
+  - greenlight

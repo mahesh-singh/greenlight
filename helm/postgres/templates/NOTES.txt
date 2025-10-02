@@ -1,0 +1,25 @@
+1. Get the PostgreSQL connection details:
+
+   Database Host: {{ include "postgres.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+   Database Port: {{ .Values.service.port }}
+   Database Name: {{ .Values.postgresql.database }}
+   Database User: {{ .Values.postgresql.username }}
+
+2. To connect to your database from within the cluster:
+
+   kubectl run {{ include "postgres.fullname" . }}-client --rm --tty -i --restart='Never' \
+     --namespace {{ .Release.Namespace }} --image postgres:{{ .Values.image.tag }} \
+     --env="PGPASSWORD={{ .Values.postgresql.password }}" \
+     --command -- psql --host {{ include "postgres.fullname" . }} -U {{ .Values.postgresql.username }} -d {{ .Values.postgresql.database }} -p {{ .Values.service.port }}
+
+3. The following secrets have been created:
+   - {{ include "postgres.fullname" . }}-credentials: PostgreSQL credentials
+   - greenlight-secrets: Database URL for the API application
+
+{{- if .Values.migration.enabled }}
+4. Database migrations have been configured to run automatically on install/upgrade.
+{{- end }}
+
+{{- if .Values.persistence.enabled }}
+5. Persistent storage is enabled. Data will be stored in PVC: {{ include "postgres.fullname" . }}-pvc
+{{- end }}

@@ -153,3 +153,9 @@ https://claude.ai/chat/7f9bbf94-ff1b-439a-acff-7c2072ac46a3
 What is `ServiceAccount`, `ClusterRole`, `ClusterRoleBinding `?
 
 https://www.youtube.com/watch?v=MuX3m149FpI
+
+
+
+
+
+
